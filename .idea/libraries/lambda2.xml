@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="lambda2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pkg/resource/aws/testdata/acc/aws_api_gateway_authorizer/lambda.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

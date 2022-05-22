@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="function">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pkg/resource/aws/testdata/acc/aws_lambda_event_source_mapping/function.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

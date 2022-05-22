@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="index">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pkg/resource/google/testdata/acc/google_cloudfunctions_function/index.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

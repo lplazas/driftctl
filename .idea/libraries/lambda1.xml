@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="lambda1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pkg/remote/test/aws_lambda_function_signed/lambda.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

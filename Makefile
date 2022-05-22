@@ -2,17 +2,53 @@
 SHELL=/bin/bash
 # Go parameters
 GOCMD=go
+ORG=snyk
+PROJECT=driftctl
 GOBINPATH=$(shell $(GOCMD) env GOPATH)/bin
 GOMOD=$(GOCMD) mod
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
-GOTEST=gotestsum
+GOTEST=$(GOBINPATH)/gotestsum
+MOCKERY=$(GOBINPATH)/mockery
 GOGET=$(GOCMD) get
 GOINSTALL=$(GOCMD) install
 GOTOOL=$(GOCMD) tool
 GOFMT=$(GOCMD) fmt
+GOOS ?= $(shell uname)
+GOARCH ?= $(shell uname -m)
 # ACC tests params
 ACC_PATTERN ?= TestAcc_
+
+# Dependency versions
+GOTESTSUM_VERSION=v1.6.3
+MOCKERY_VERSION=2.12.2
+
+define HELP
+
+$(ORG)/$(PROJECT) make targets
+----------------------------------------------------
+- help:                     Prints this
+- all:                      Runs (fmt lint test build go.mod)
+- build:                    Builds the binary
+- test:                     Runs unit tests
+- coverage:                 Generates unit test coverage report
+- acc:                      Runs acceptance tests
+- mocks:                    Runs acceptance tests
+
+## Release targets
+
+- release:       Releases the package to GitHub.
+- snapshot:      Builds a release snapshot and saves the artifacts in the dist
+                 folders.
+- changelog:     Generates the CHANGELOG.md and notes/$(VERSION).md
+
+endef
+export HELP
+
+.DEFAULT: help
+.PHONY: help
+help:
+	@ echo "$$HELP"
 
 .PHONY: FORCE
 
@@ -27,8 +63,11 @@ build:
 release:
 	ENV=release ./scripts/build.sh
 
+bin/test-deps:
+	go install gotest.tools/gotestsum@${GOTESTSUM_VERSION}
+
 .PHONY: test
-test:
+test: install-tools
 	$(GOTEST) --format testname --junitfile unit-tests.xml -- -mod=readonly -coverprofile=cover.out.tmp -coverpkg=.,./pkg/... ./...
 	cat cover.out.tmp | grep -v "mock_" > cover.out
 
@@ -37,14 +76,13 @@ coverage: test
 	$(GOTOOL) cover -func=cover.out
 
 .PHONY: acc
-acc:
+acc: install-tools
 	DRIFTCTL_ACC=true $(GOTEST) --format testname --junitfile unit-tests-acc.xml -- -coverprofile=cover-acc.out -test.timeout 5h -coverpkg=./pkg/... -run=$(ACC_PATTERN) ./pkg/...
 
 .PHONY: mocks
-mocks:
+mocks: install-tools
 	rm -rf mocks
-	mockery --all
-
+	$(MOCKERY) --all
 
 .PHONY: fmt
 fmt:
@@ -62,8 +100,10 @@ lint:
 
 .PHONY: install-tools
 install-tools:
-	$(GOINSTALL) gotest.tools/gotestsum@v1.6.3
-	$(GOINSTALL) github.com/vektra/mockery/v2@latest
+	$(GOINSTALL) gotest.tools/gotestsum@$(GOTESTSUM_VERSION)
+	curl -L https://github.com/vektra/mockery/releases/download/v$(MOCKERY_VERSION)/mockery_$(MOCKERY_VERSION)_$(GOOS)_$(GOARCH).tar.gz -o mockery_$(MOCKERY_VERSION)_$(GOOS)_$(GOARCH).tar.gz
+	tar -xjf mockery_$(MOCKERY_VERSION)_$(GOOS)_$(GOARCH).tar.gz -C $(GOBINPATH)
+
 
 
 go.mod: FORCE

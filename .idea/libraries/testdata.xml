@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="testdata">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pkg/terraform/testdata/terraform-provider-aws_3.5.0_linux_amd64.zip!/" />
+      <root url="jar://$PROJECT_DIR$/pkg/terraform/testdata/invalid.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
